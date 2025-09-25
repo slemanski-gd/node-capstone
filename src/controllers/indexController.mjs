@@ -6,6 +6,9 @@ const __dirname = dirname(__filename);
 
 const rootDir = resolve(__dirname, "../..");
 
+/**
+ * Render the main page of the application.
+ */
 const renderPage = (_, res) => {
   res.sendFile(resolve(rootDir, "views", "index.html"));
 };
