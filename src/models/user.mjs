@@ -20,7 +20,7 @@ const insertUser = async (db, username) => {
   const newId = uuidv4();
   const insertQuery = `INSERT INTO users (_id, username) VALUES (?, ?)`;
   const result = await db.run(insertQuery, [newId, username]);
-  return result.newId;
+  return newId;
 };
 
 /**
