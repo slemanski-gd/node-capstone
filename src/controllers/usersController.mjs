@@ -11,7 +11,6 @@ import { filterExercises } from "../shared/utils/filterExercises.mjs";
  * Add a new user to the database.
  */
 const addUser = async (req, res) => {
-  console.log(req.body);
   const { username } = req.body;
 
   if (!username) {
@@ -20,7 +19,7 @@ const addUser = async (req, res) => {
 
   try {
     const userId = await insertUser(db, username);
-    res.json({ username, _id: String(userId) });
+    res.json({ username, _id: userId });
   } catch (error) {
     console.error(error);
     if (error.message.includes("UNIQUE constraint failed")) {

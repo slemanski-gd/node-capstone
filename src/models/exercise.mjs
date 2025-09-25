@@ -4,13 +4,13 @@
 const createExercisesTable = async (db) => {
   const createTableQuery = `
         CREATE TABLE IF NOT EXISTS exercises (
-            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            _id TEXT PRIMARY KEY,
             username TEXT NOT NULL,
             description TEXT NOT NULL,
             duration INTEGER NOT NULL,
             date TEXT NOT NULL,
-            user_id INTEGER,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            user_id TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(_id)
         )
     `;
   await db.run(createTableQuery);
@@ -20,14 +20,21 @@ const createExercisesTable = async (db) => {
  * Inserts a new exercise record into the "exercises" table.
  */
 const insertExercise = async (db, exerciseData) => {
-  console.log("insert");
+  const newId = uuidv4();
   const { username, description, duration, date, user_id } = exerciseData;
   const insertQuery = `
-        INSERT INTO exercises (username, description, duration, date, user_id)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO exercises (_id, username, description, duration, date, user_id)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-  await db.run(insertQuery, [username, description, duration, date, user_id]);
+  await db.run(insertQuery, [
+    newId,
+    username,
+    description,
+    duration,
+    date,
+    user_id,
+  ]);
 };
 
 /**

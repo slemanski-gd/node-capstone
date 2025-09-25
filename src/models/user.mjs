@@ -1,10 +1,12 @@
+import { v4 as uuidv4 } from "uuid";
+
 /**
  * Creates the "users" table in the database if it doesn't exist.
  */
 const createUserTable = async (db) => {
   const createTableQuery = `
         CREATE TABLE IF NOT EXISTS users (
-            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            _id TEXT PRIMARY KEY,
             username TEXT UNIQUE NOT NULL
         )
     `;
@@ -15,9 +17,10 @@ const createUserTable = async (db) => {
  * Insert a new user into the database.
  */
 const insertUser = async (db, username) => {
-  const insertQuery = `INSERT INTO users (username) VALUES (?)`;
-  const result = await db.run(insertQuery, [username]);
-  return result.lastID;
+  const newId = uuidv4();
+  const insertQuery = `INSERT INTO users (_id, username) VALUES (?, ?)`;
+  const result = await db.run(insertQuery, [newId, username]);
+  return result.newId;
 };
 
 /**
