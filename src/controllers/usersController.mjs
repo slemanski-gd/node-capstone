@@ -20,7 +20,7 @@ const addUser = async (req, res) => {
 
   try {
     const userId = await insertUser(db, username);
-    res.json({ username, _id: userId });
+    res.json({ username, _id: String(userId) });
   } catch (error) {
     console.error(error);
     if (error.message.includes("UNIQUE constraint failed")) {
