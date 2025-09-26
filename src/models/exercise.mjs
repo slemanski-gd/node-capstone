@@ -1,15 +1,18 @@
+import { v4 as uuidv4 } from "uuid";
+import { normalizeId } from "../shared/utils/normalizeId.mjs";
+
 /**
  * Creates the "exercises" table in the database if it doesn't exist.
  */
 const createExercisesTable = async (db) => {
   const createTableQuery = `
         CREATE TABLE IF NOT EXISTS exercises (
-            _id TEXT PRIMARY KEY,
+            exercise_id TEXT PRIMARY KEY,
+            user_id TEXT,
             username TEXT NOT NULL,
             description TEXT NOT NULL,
             duration INTEGER NOT NULL,
             date TEXT NOT NULL,
-            user_id TEXT,
             FOREIGN KEY (user_id) REFERENCES users(_id)
         )
     `;
@@ -20,21 +23,22 @@ const createExercisesTable = async (db) => {
  * Inserts a new exercise record into the "exercises" table.
  */
 const insertExercise = async (db, exerciseData) => {
-  const newId = uuidv4();
-  const { username, description, duration, date, user_id } = exerciseData;
+  const exercise_id = normalizeId(uuidv4());
+  const { user_id, username, description, duration, date } = exerciseData;
   const insertQuery = `
-        INSERT INTO exercises (_id, username, description, duration, date, user_id)
+        INSERT INTO exercises (exercise_id, user_id, username, description, duration, date)
         VALUES (?, ?, ?, ?, ?, ?)
     `;
 
   await db.run(insertQuery, [
-    newId,
+    exercise_id,
+    user_id,
     username,
     description,
     duration,
     date,
-    user_id,
   ]);
+  return exercise_id;
 };
 
 /**

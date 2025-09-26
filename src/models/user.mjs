@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { normalizeId } from "../shared/utils/normalizeId.mjs";
 
 /**
  * Creates the "users" table in the database if it doesn't exist.
@@ -17,7 +18,7 @@ const createUserTable = async (db) => {
  * Insert a new user into the database.
  */
 const insertUser = async (db, username) => {
-  const newId = uuidv4();
+  const newId = normalizeId(uuidv4());
   const insertQuery = `INSERT INTO users (_id, username) VALUES (?, ?)`;
   const result = await db.run(insertQuery, [newId, username]);
   return newId;
@@ -37,7 +38,10 @@ const selectAllUsers = async (db) => {
  */
 const getUserById = async (db, userId) => {
   const users = await selectAllUsers(db);
-  const user = users.find((u) => u._id === parseInt(userId));
+  const user = users.find((u) => {
+    const cleanId = u._id;
+    return cleanId === userId;
+  });
   return user;
 };
 
